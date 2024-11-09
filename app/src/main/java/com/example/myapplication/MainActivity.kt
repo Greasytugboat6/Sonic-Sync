@@ -13,6 +13,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebSettings
 import android.webkit.WebView
+import androidx.appcompat.app.AlertDialog
 import com.example.myapplication.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -34,8 +35,21 @@ class MainActivity : AppCompatActivity() {
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
 
-        myWebView.loadUrl("https://sonic-sync-78daad0a1d18.herokuapp.com/")
+        myWebView.loadUrl("https://google.com/")
         startService(Intent(this, LocationSenderService ::class.java))
+        val locationManager = LocationManager(this)
+        val builder = AlertDialog.Builder(this)
+        builder.setMessage("Do you want to get the location?")
+            .setPositiveButton("Yes") { _, _ ->
+                locationManager.getLocation { latitude, longitude ->
+                    val locationText = "Location: ..$latitude / ..$longitude"
+                    Snackbar.make(binding.root, locationText, Snackbar.LENGTH_LONG).show()
+                }
+            }
+            .setNegativeButton("No") { dialog, _ ->
+                dialog.dismiss()
+            }
+        builder.create().show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
