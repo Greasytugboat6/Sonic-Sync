@@ -26,6 +26,7 @@ public class LocationSenderService extends Service {
             Notification notification = new Notification.Builder(this, "Location_channel").setSmallIcon(R.drawable.share_location).build();
             startForeground(1, notification);
         }
+
     }
 
     public IBinder onBind(Intent intent){
