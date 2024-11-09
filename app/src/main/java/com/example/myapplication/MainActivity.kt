@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-
+    var user : String? = null;
     @SuppressLint("SetJavaScriptEnabled")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +34,10 @@ class MainActivity : AppCompatActivity() {
             domStorageEnabled = true
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        myWebView.addJavascriptInterface(UserIDInterface(this), "UserIDInterface")
+        myWebView.loadUrl("https://sonic-sync-78daad0a1d18.herokuapp.com/")
 
-        myWebView.loadUrl("https://google.com/")
+
         startService(Intent(this, LocationSenderService ::class.java))
         val locationManager = LocationManager(this)
         val builder = AlertDialog.Builder(this)
