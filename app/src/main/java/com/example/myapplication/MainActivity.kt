@@ -10,9 +10,9 @@ import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
+import android.webkit.WebSettings
 import android.webkit.WebView
 import com.example.myapplication.databinding.ActivityMainBinding
-
 class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -26,8 +26,12 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         val myWebView: WebView = findViewById(R.id.webView)
         myWebView.webViewClient = RedirectViewer()
-        myWebView.settings.javaScriptEnabled = true
-        myWebView.loadUrl("https://www.example.com")
+        myWebView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        }
+        myWebView.loadUrl("https://sonic-sync-78daad0a1d18.herokuapp.com/")
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
