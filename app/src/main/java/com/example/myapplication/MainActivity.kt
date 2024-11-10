@@ -2,6 +2,7 @@ package com.example.myapplication
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
@@ -35,8 +36,12 @@ class MainActivity : AppCompatActivity() {
             domStorageEnabled = true
             mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
         myWebView.addJavascriptInterface(UserIDInterface(this), "UserIDInterface")
         myWebView.loadUrl("https://sonic-sync-78daad0a1d18.herokuapp.com/")
+
 
         startService(Intent(this, LocationSenderService::class.java).apply {})
         val locationManager = LocationManager(this)
