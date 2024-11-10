@@ -9,5 +9,6 @@ class UserIDInterface(c : Context) {
     @JavascriptInterface
     fun getUserID(code:String){
         mContext.user = code
+        UserHolder.user = code
     }
 }

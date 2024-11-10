@@ -7,6 +7,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
+import android.util.Log
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -29,18 +30,21 @@ class LocationSenderService : Service() {
     private val scope = CoroutineScope(
         SupervisorJob() + Dispatchers.IO
     )
+    private var serviceIntent: Intent? = null
+
+
 
     override fun onCreate() {
         super.onCreate()
 
         val locationManager = LocationManager(applicationContext)
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance = NotificationManager.IMPORTANCE_DEFAULT
             val mChannel = NotificationChannel("Location_channel", "locChannel", importance)
             mChannel.description = "Sending your location to server"
-            // Register the channel with the system. You can't change the importance
-            // or other notification behaviors after this.
+
             val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(mChannel)
 
@@ -58,6 +62,8 @@ class LocationSenderService : Service() {
 
             scope.launch {
                 locationManager.trackLocation().collect { location ->
+                    val userId = UserHolder.user
+                    Log.d("User ID", "$userId")
                     val latitude = location.latitude.toString()
                     val longitude = location.longitude.toString()
                     val updatedNotification = NotificationCompat.Builder(this@LocationSenderService, "Location_channel")
@@ -65,15 +71,20 @@ class LocationSenderService : Service() {
                         .setContentText("Location: $latitude / $longitude")
                         .build()
                     notificationManager.notify(1, updatedNotification)
-                    val gpsData = JSONObject().apply {
-                        put("user_id", "0")  // Replace with actual user_id
-                        put("latitude", location.latitude)
-                        put("longitude", location.longitude)
-                        put("timestamp", System.currentTimeMillis())
-                    }
+                    if (userId != null) {
+                        val gpsData = JSONObject().apply {
+                            put("user_id", userId)
+                            put("latitude", location.latitude)
+                            put("longitude", location.longitude)
+                            put("timestamp", System.currentTimeMillis())
+                        }
 
-                    socket.emit("gps_data", gpsData)
-                    println("GPS data emitted: $gpsData")
+                        socket.emit("gps_data", gpsData)
+                        Log.d("GPS data emitted", "$gpsData")
+                    }
+                    else {
+                        Log.d("Error", "User ID is null")
+                    }
 
                 }
             }
