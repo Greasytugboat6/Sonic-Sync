@@ -64,13 +64,6 @@ class LocationSenderService : Service() {
                 locationManager.trackLocation().collect { location ->
                     val userId = UserHolder.user
                     Log.d("User ID", "$userId")
-                    val latitude = location.latitude.toString()
-                    val longitude = location.longitude.toString()
-                    val updatedNotification = NotificationCompat.Builder(this@LocationSenderService, "Location_channel")
-                        .setSmallIcon(R.drawable.share_location)
-                        .setContentText("Location: $latitude / $longitude")
-                        .build()
-                    notificationManager.notify(1, updatedNotification)
                     if (userId != null) {
                         val gpsData = JSONObject().apply {
                             put("user_id", userId)
@@ -94,46 +87,5 @@ class LocationSenderService : Service() {
 
     override fun onBind(intent: Intent): IBinder? {
         return null
-    } /* private fun createNotification(): Notification {
-        val channelId = "location_service"
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                channelId, "Location Service",
-                NotificationManager.IMPORTANCE_LOW
-            )
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
-        }
-        return Notification()
-    }*/
-    /*private fun startLocationUpdates() {
-        val locationRequest = LocationRequest.create().apply {
-            interval = 10000 // 10 seconds
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
-
-        fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, null)
     }
-
-    private val locationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            locationResult.locations.forEach { location ->
-                sendLocationToServer(location)
-            }
-        }
-    }
-
-    private fun sendLocationToServer(location: Location) {
-        coroutineScope.launch {
-            // Replace with your server's API endpoint
-            val url = "https://yourserver.com/api/location"
-            val locationData = mapOf("latitude" to location.latitude, "longitude" to location.longitude)
-
-            // Implement your HTTP request here (e.g., using Retrofit or HttpURLConnection)
-            // For example, use Retrofit to send the data to the server
-        }
-    }*/
-    //private lateinit var fusedLocationClient: FusedLocationProviderClient
-    //private val coroutineScope = CoroutineScope(Dispatchers.IO)
 }
