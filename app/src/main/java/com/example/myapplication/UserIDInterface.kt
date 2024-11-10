@@ -11,4 +11,10 @@ class UserIDInterface(c : Context) {
         mContext.user = code
         UserHolder.user = code
     }
+
+    @JavascriptInterface
+    fun logOut(){
+        UserHolder.user = null
+        mContext.user = null
+    }
 }

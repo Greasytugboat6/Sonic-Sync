@@ -14,16 +14,8 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import androidx.core.app.NotificationCompat
 import org.json.JSONObject
-import java.net.HttpURLConnection
-import java.net.URL
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.WebSocketListener
-import okhttp3.WebSocket
-import okhttp3.Response
 import io.socket.client.IO
 import io.socket.client.Socket
-import java.net.URISyntaxException
 
 class LocationSenderService : Service() {
 
@@ -50,7 +42,7 @@ class LocationSenderService : Service() {
 
             val notification = NotificationCompat.Builder(this, "Location_channel")
                 .setSmallIcon(R.drawable.share_location)
-                .setContentText("Location: ..\$latitude / ..\$longitude")
+                .setContentText("Campus Companion is running\nSwipe to stop")
                 .build()
             startForeground(1, notification)
             val options = IO.Options().apply {
