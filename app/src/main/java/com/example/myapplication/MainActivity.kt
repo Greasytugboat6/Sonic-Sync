@@ -4,18 +4,17 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.navigateUp
-import androidx.navigation.ui.setupActionBarWithNavController
 import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebSettings
+import android.webkit.WebStorage
 import android.webkit.WebView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
+import androidx.navigation.ui.AppBarConfiguration
 import com.example.myapplication.databinding.ActivityMainBinding
+import com.google.android.material.snackbar.Snackbar
+import android.webkit.CookieManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,9 +26,18 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         val myWebView: WebView = findViewById(R.id.webView)
+        myWebView.clearCache(true)
+        myWebView.clearFormData()
+        myWebView.clearHistory()
+        myWebView.clearSslPreferences()
+        val cookieManager = CookieManager.getInstance();
+        cookieManager.removeAllCookies(null);
+        cookieManager.flush();
+        WebStorage.getInstance().deleteAllData()
         myWebView.webViewClient = RedirectViewer()
         myWebView.settings.apply {
             javaScriptEnabled = true
